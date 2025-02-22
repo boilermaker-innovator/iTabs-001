@@ -3,6 +3,595 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iTabs - Transform How Your Customers Interact with Information</title>
+    <style>
+        :root {
+            --primary-color: #2962ff;
+            --primary-dark: #0039cb;
+            --primary-light: #e9f0ff;
+            --text-color: #333333;
+            --light-text: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --highlight-color: #ffeb3b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .i-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            color: var(--primary-color);
+            border-radius: 50%;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: #f0f2f5;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 14px 5px;
+            background-color: #e1e6f0;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            border: none;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: -2px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .tab-content {
+            padding: 25px;
+            display: none;
+            min-height: 250px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        .highlight {
+            background-color: var(--primary-light);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            flex: 1;
+            min-width: 120px;
+            background-color: var(--primary-light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        .steps {
+            counter-reset: step;
+            margin: 20px 0;
+        }
+        
+        .step {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 20px;
+        }
+        
+        .step:before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .testimonials {
+            margin: 20px 0;
+        }
+        
+        .testimonial {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .testimonial:last-child {
+            margin-bottom: 0;
+        }
+        
+        .testimonial:before {
+            content: """;
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            font-size: 40px;
+            color: #ddd;
+            font-family: Georgia, serif;
+        }
+        
+        .testimonial-text {
+            padding-left: 15px;
+            font-style: italic;
+        }
+        
+        .testimonial-source {
+            text-align: right;
+            font-weight: 500;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .cta {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .cta:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .demo-itab {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .demo-i {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+        
+        .demo-popup {
+            display: none;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 250px;
+            z-index: 100;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .demo-popup:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid white;
+        }
+        
+        .demo-popup-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .demo-itab:hover .demo-popup {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <span class="i-icon">i</span>
+                <h1>iTabs</h1>
+            </div>
+            <p class="subtitle">Transform How Your Customers Interact with Information</p>
+        </div>
+        
+        <div class="tabs" role="tablist">
+            <button class="tab active" role="tab" aria-selected="true" id="tab1" aria-controls="content1">The Challenge</button>
+            <button class="tab" role="tab" aria-selected="false" id="tab2" aria-controls="content2">The Solution</button>
+            <button class="tab" role="tab" aria-selected="false" id="tab3" aria-controls="content3">Implementation</button>
+            <button class="tab" role="tab" aria-selected="false" id="tab4" aria-controls="content4">Results</button>
+        </div>
+        
+        <div id="content1" class="tab-content active" role="tabpanel" aria-labelledby="tab1">
+            <h2>The Digital Information Crisis</h2>
+            
+            <p>In today's digital landscape, businesses face a critical challenge: <strong>information overload is driving customers away</strong>.</p>
+            
+            <div class="highlight">
+                <p>Your customers want details, but they don't want clutter. They demand quick answers without leaving their current context. Traditional solutions fail on both counts.</p>
+            </div>
+            
+            <p>The consequences are measurable:</p>
+            
+            <ul>
+                <li><strong>79%</strong> of users scan rather than read website content</li>
+                <li><strong>53%</strong> of mobile visitors abandon sites that take over 3 seconds to load</li>
+                <li><strong>38%</strong> of users will stop engaging if content is unattractive</li>
+                <li><strong>70%</strong> of customers abandon purchases because they couldn't find the information they needed</li>
+            </ul>
+            
+            <p>The gap between <span class="demo-itab">surface engagement<span class="demo-i">i</span>
+                <div class="demo-popup">
+                    <div class="demo-popup-title">Surface Engagement</div>
+                    <p>The initial interaction users have with content before deciding to invest more time. This typically lasts 3-5 seconds.</p>
+                </div>
+            </span> and <span class="demo-itab">deep interaction<span class="demo-i">i</span>
+                <div class="demo-popup">
+                    <div class="demo-popup-title">Deep Interaction</div>
+                    <p>Meaningful engagement where users actively consume content, make decisions, and take action.</p>
+                </div>
+            </span> is costing you conversions every day.</p>
+        </div>
+        
+        <div id="content2" class="tab-content" role="tabpanel" aria-labelledby="tab2">
+            <h2>iTabs: The Digital Bridge</h2>
+            
+            <p>iTabs transforms the humble information icon (i) into a powerful bridge between casual browsing and detailed engagement.</p>
+            
+            <div class="highlight">
+                <p><strong>You're experiencing it right now</strong> - information appears exactly when and where you need it, without disrupting your flow.</p>
+            </div>
+            
+            <p>Our solution addresses three critical needs:</p>
+            
+            <ul>
+                <li><strong>Context Preservation</strong> - Information appears without navigation away from the current page</li>
+                <li><strong>Progressive Disclosure</strong> - Details appear only when users express interest</li>
+                <li><strong>Familiar Interaction</strong> - Leverages the universally recognized information icon</li>
+            </ul>
+            
+            <p>iTabs works everywhere your customers are:</p>
+            
+            <ul>
+                <li>Product pages and listings</li>
+                <li>Mobile apps and responsive websites</li>
+                <li>Marketing emails and newsletters</li>
+                <li>Social media posts and profiles</li>
+            </ul>
+            
+            <p>Best of all, iTabs <span class="demo-itab">requires no technical knowledge<span class="demo-i">i</span>
+                <div class="demo-popup">
+                    <div class="demo-popup-title">No Coding Required</div>
+                    <p>Our simple form-based creator lets anyone create professional iTabs in minutes without writing a single line of code.</p>
+                </div>
+            </span> to implement.</p>
+        </div>
+        
+        <div id="content3" class="tab-content" role="tabpanel" aria-labelledby="tab3">
+            <h2>Simple Implementation</h2>
+            
+            <p>Adding iTabs to your digital presence is remarkably straightforward:</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-title">Identify Your Key Information</div>
+                    <p>Determine what details your customers need most to make decisions.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-title">Create with Our No-Code Builder</div>
+                    <p>Use our simple form-based tool to create professional iTabs in minutes.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-title">Deploy Anywhere with Copy/Paste</div>
+                    <p>Add the generated code to your website, emails, or share with developers.</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <p><strong>WordPress user?</strong> Our plugin makes implementation even easier - just install, activate, and add iTabs through a familiar interface.</p>
+            </div>
+            
+            <p>iTabs integrates seamlessly with your existing:</p>
+            
+            <ul>
+                <li>Content management systems</li>
+                <li>E-commerce platforms</li>
+                <li>Marketing automation tools</li>
+                <li>Customer support systems</li>
+            </ul>
+        </div>
+        
+        <div id="content4" class="tab-content" role="tabpanel" aria-labelledby="tab4">
+            <h2>Real Business Impact</h2>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">45%</div>
+                    <div class="stat-label">Increased Time on Page</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">32%</div>
+                    <div class="stat-label">Higher Conversion Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">73%</div>
+                    <div class="stat-label">Faster Information Finding</div>
+                </div>
+            </div>
+            
+            <p>What our early adopters are saying:</p>
+            
+            <div class="testimonials">
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "We implemented iTabs on our product listings and saw an immediate jump in conversion rates. Customers find what they need without leaving the page."
+                    </div>
+                    <div class="testimonial-source">
+                        - Sarah J., E-commerce Director
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "Our mobile bounce rate dropped by 27% after adding iTabs to our site. The clean interface works perfectly on small screens."
+                    </div>
+                    <div class="testimonial-source">
+                        - Michael T., Digital Marketing Manager
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <p><strong>Perfect for:</strong> E-commerce, SaaS, Finance, Healthcare, Real Estate, Education, Non-profits, and any business where information clarity drives decisions.</p>
+            </div>
+        </div>
+        
+        <a href="#" class="cta">Create Your First iTab Free</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            let currentTab = 0;
+            let rotationInterval;
+            let rotationCount = 0;
+            const maxRotations = tabs.length - 1; // One complete cycle
+            
+            // Tab switching function
+            function switchTab(index) {
+                // Update tab states
+                tabs.forEach((tab, i) => {
+                    tab.classList.toggle('active', i === index);
+                    tab.setAttribute('aria-selected', i === index);
+                });
+                
+                // Update content visibility
+                tabContents.forEach((content, i) => {
+                    content.classList.toggle('active', i === index);
+                });
+                
+                currentTab = index;
+            }
+            
+            // Set up click handlers for tabs
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('click', () => {
+                    switchTab(index);
+                    clearInterval(rotationInterval); // Stop auto rotation on user interaction
+                });
+                
+                // Keyboard navigation
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        switchTab(index);
+                        clearInterval(rotationInterval);
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        const nextIndex = (index + 1) % tabs.length;
+                        tabs[nextIndex].focus();
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        const prevIndex = (index - 1 + tabs.length) % tabs.length;
+                        tabs[prevIndex].focus();
+                    }
+                });
+            });
+            
+            // Auto rotation - just once through all tabs
+            rotationInterval = setInterval(() => {
+                if (rotationCount >= maxRotations) {
+                    clearInterval(rotationInterval);
+                    return;
+                }
+                
+                const nextTab = (currentTab + 1) % tabs.length;
+                switchTab(nextTab);
+                rotationCount++;
+            }, 6000);
+            
+            // Pause rotation on hover/focus, resume on leave
+            const container = document.querySelector('.container');
+            
+            container.addEventListener('mouseenter', () => {
+                if (rotationCount < maxRotations) {
+                    clearInterval(rotationInterval);
+                }
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                if (rotationCount < maxRotations) {
+                    rotationInterval = setInterval(() => {
+                        if (rotationCount >= maxRotations) {
+                            clearInterval(rotationInterval);
+                            return;
+                        }
+                        
+                        const nextTab = (currentTab + 1) % tabs.length;
+                        switchTab(nextTab);
+                        rotationCount++;
+                    }, 6000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iTabs: Bridging Digital Experiences</title>
     <style>
         :root {
