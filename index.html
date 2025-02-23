@@ -1,3 +1,362 @@
+<br>
+23/02/25
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The iTabs Digital Bridge</title>
+    <style>
+        /* Your existing teaser styles */
+        :root {
+            --primary-color: #2962ff;
+            --primary-dark: #0039cb;
+            --primary-light: #e9f0ff;
+            --text-color: #333333;
+            --light-text: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .story-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .highlight {
+            background-color: var(--primary-light);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* New emoji-iTabs styles */
+        .reaction-container {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .emoji-with-i {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .emoji {
+            font-size: 24px;
+        }
+
+        .i-indicator {
+            position: absolute;
+            bottom: 0;
+            right: -2px;
+            background: #0066cc;
+            color: white;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            cursor: pointer;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 300px;
+            padding: 15px;
+            z-index: 1000;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .emoji-option {
+            font-size: 24px;
+            padding: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-option:hover {
+            background: #e9ecef;
+            transform: scale(1.1);
+        }
+
+        .emoji-option.selected {
+            border-color: #0066cc;
+            background: #e7f1ff;
+        }
+
+        .comment-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .comment-option {
+            padding: 10px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .comment-option:hover {
+            background: #e9ecef;
+        }
+
+        .selected-reaction {
+            display: none;
+            background: #e3f2fd;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .custom-comment {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .submit-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            background: #e9ecef;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="story-card">
+            <h1>The iTabs Digital Bridge</h1>
+            
+            <p>Sarah, a digital marketing director, faced a common problem: customers were abandoning product pages because they couldn't find key information without excessive scrolling or navigating away.</p>
+            
+            <div class="highlight">
+                <p>"We need to bridge the gap between quick browsing and detailed information," she realized. "People want details, but they don't want clutter."</p>
+            </div>
+            
+            <p>The solution came from observing how people naturally interact with information icons. Sarah and her team developed iTabs, transforming the humble information icon into an interactive bridge between surface browsing and detailed engagement.</p>
+            
+            <p>The results were dramatic: 45% increased engagement, 32% higher conversion rates, and significantly improved customer satisfaction as people found what they needed without disrupting their browsing experience.</p>
+
+            <div class="reaction-container">
+                <div class="emoji-with-i">
+                    <span class="emoji">👍</span>
+                    <span class="i-indicator">i</span>
+                    <div class="selected-reaction"></div>
+                </div>
+                
+                <div class="popup">
+                    <div class="emoji-grid">
+                        <span class="emoji-option">👍</span>
+                        <span class="emoji-option">❤️</span>
+                        <span class="emoji-option">😉</span>
+                        <span class="emoji-option">😴</span>
+                        <span class="emoji-option">😭</span>
+                        <span class="emoji-option">💰</span>
+                        <span class="emoji-option">😍</span>
+                        <span class="emoji-option">😘</span>
+                        <span class="emoji-option">💋</span>
+                        <span class="emoji-option">🙏</span>
+                        <span class="emoji-option">💯</span>
+                        <span class="emoji-option">✨</span>
+                    </div>
+                    
+                    <div class="comment-options">
+                        <div class="section-title">Add a comment:</div>
+                        <button class="comment-option">Love this! Absolutely amazing</button>
+                        <button class="comment-option">This is exactly what I needed</button>
+                        <button class="comment-option">Thanks for sharing this</button>
+                        <button class="comment-option">Made my day!</button>
+                    </div>
+
+                    <div class="custom-comment">
+                        <input type="text" class="custom-input" placeholder="Or write your own comment...">
+                        <div class="button-group">
+                            <button class="cancel-btn">Cancel</button>
+                            <button class="submit-btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.reaction-container');
+            const emoji = document.querySelector('.emoji');
+            const iIndicator = document.querySelector('.i-indicator');
+            const popup = document.querySelector('.popup');
+            const selectedReaction = document.querySelector('.selected-reaction');
+            const emojiOptions = document.querySelectorAll('.emoji-option');
+            const commentOptions = document.querySelectorAll('.comment-option');
+            const customInput = document.querySelector('.custom-input');
+            const submitBtn = document.querySelector('.submit-btn');
+            const cancelBtn = document.querySelector('.cancel-btn');
+
+            let selectedEmoji = '👍';
+
+            function closePopup() {
+                popup.style.display = 'none';
+            }
+
+            function showSelectedReaction(emoji, text) {
+                selectedReaction.textContent = `${emoji} ${text}`;
+                selectedReaction.style.display = 'inline';
+                closePopup();
+            }
+
+            // Emoji click for quick reaction
+            emoji.addEventListener('click', () => {
+                showSelectedReaction('👍', 'Quick reaction');
+            });
+
+            // i-indicator click for popup
+            iIndicator.addEventListener('click', (e) => {
+                e.stopPropagation();
+                popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+            });
+
+            emojiOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    emojiOptions.forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedEmoji = option.textContent;
+                });
+            });
+
+            commentOptions.forEach(button => {
+                button.addEventListener('click', () => {
+                    showSelectedReaction(selectedEmoji, button.textContent);
+                });
+            });
+
+            submitBtn.addEventListener('click', () => {
+                const customText = customInput.value.trim();
+                if (customText) {
+                    showSelectedReaction(selectedEmoji, customText);
+                    customInput.value = '';
+                }
+            });
+
+            cancelBtn.addEventListener('click', closePopup);
+
+            document.addEventListener('click', (e) => {
+                if (!container.contains(e.target)) {
+                    closePopup();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+<br>
+<br>
 <!DOCTYPE html>
 <html lang="en">
 <head>
