@@ -1,3 +1,334 @@
+24/02/25
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Reaction Popup</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
+        }
+
+        /* Emoji Button */
+        .emoji-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .emoji-trigger:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .emoji-icon {
+            font-size: 24px;
+            margin-right: 4px;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            background: #2962ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        /* Popup */
+        .emoji-popup {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 320px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .emoji-popup.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Popup sections */
+        .popup-section {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Emoji grid */
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .emoji-option {
+            font-size: 24px;
+            padding: 8px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .emoji-option:hover {
+            background-color: #f0f2f5;
+        }
+
+        .emoji-option.selected {
+            background-color: #e7f0ff;
+        }
+
+        /* Preset comments */
+        .preset-comments {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .preset-comment {
+            text-align: left;
+            padding: 8px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .preset-comment:hover {
+            background-color: #f0f2f5;
+        }
+
+        /* Custom comment */
+        .custom-comment {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .custom-comment:focus {
+            outline: none;
+            border-color: #2962ff;
+            box-shadow: 0 0 0 2px rgba(41,98,255,0.1);
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .action-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cancel-button {
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .cancel-button:hover {
+            background-color: #e4e6eb;
+        }
+
+        .submit-button {
+            background-color: #2962ff;
+            color: white;
+        }
+
+        .submit-button:hover {
+            background-color: #1e4fcc;
+        }
+
+        /* Popup arrow */
+        .popup-arrow {
+            position: absolute;
+            bottom: -8px;
+            right: 24px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            transform: rotate(45deg);
+            border-right: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Emoji Trigger Button -->
+    <button class="emoji-trigger" id="emojiTrigger">
+        <span class="emoji-icon">👍</span>
+        <span class="info-icon">i</span>
+    </button>
+
+    <!-- Emoji Popup -->
+    <div class="emoji-popup" id="emojiPopup">
+        <!-- Emoji Selection -->
+        <div class="popup-section">
+            <div class="section-title">Choose Reaction</div>
+            <div class="emoji-grid">
+                <button class="emoji-option selected" data-emoji="👍">👍</button>
+                <button class="emoji-option" data-emoji="❤️">❤️</button>
+                <button class="emoji-option" data-emoji="😊">😊</button>
+                <button class="emoji-option" data-emoji="🎉">🎉</button>
+                <button class="emoji-option" data-emoji="👏">👏</button>
+                <button class="emoji-option" data-emoji="💡">💡</button>
+                <button class="emoji-option" data-emoji="💪">💪</button>
+                <button class="emoji-option" data-emoji="🙏">🙏</button>
+            </div>
+        </div>
+
+        <!-- Preset Comments -->
+        <div class="popup-section">
+            <div class="section-title">Quick Responses</div>
+            <div class="preset-comments">
+                <button class="preset-comment">This is really helpful!</button>
+                <button class="preset-comment">Great innovation!</button>
+                <button class="preset-comment">Love this idea!</button>
+                <button class="preset-comment">Can't wait to try it!</button>
+            </div>
+        </div>
+
+        <!-- Custom Comment -->
+        <div class="popup-section">
+            <textarea class="custom-comment" placeholder="Add a custom comment..." rows="2"></textarea>
+            <div class="action-buttons">
+                <button class="action-button cancel-button" id="cancelButton">Cancel</button>
+                <button class="action-button submit-button" id="submitButton">Submit</button>
+            </div>
+        </div>
+
+        <!-- Popup Arrow -->
+        <div class="popup-arrow"></div>
+    </div>
+
+    <script>
+        // Elements
+        const trigger = document.getElementById('emojiTrigger');
+        const popup = document.getElementById('emojiPopup');
+        const cancelButton = document.getElementById('cancelButton');
+        const submitButton = document.getElementById('submitButton');
+        const emojiOptions = document.querySelectorAll('.emoji-option');
+        const presetComments = document.querySelectorAll('.preset-comment');
+        const customComment = document.querySelector('.custom-comment');
+        const emojiIcon = document.querySelector('.emoji-icon');
+
+        // Toggle popup
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            popup.classList.toggle('active');
+        });
+
+        // Close popup when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!popup.contains(e.target) && e.target !== trigger) {
+                popup.classList.remove('active');
+            }
+        });
+
+        // Handle emoji selection
+        emojiOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Update selection styling
+                emojiOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                // Update trigger button emoji
+                emojiIcon.textContent = option.dataset.emoji;
+            });
+        });
+
+        // Handle preset comments
+        presetComments.forEach(preset => {
+            preset.addEventListener('click', () => {
+                customComment.value = preset.textContent;
+            });
+        });
+
+        // Handle cancel button
+        cancelButton.addEventListener('click', () => {
+            popup.classList.remove('active');
+        });
+
+        // Handle submit button
+        submitButton.addEventListener('click', () => {
+            const selectedEmoji = document.querySelector('.emoji-option.selected').dataset.emoji;
+            const comment = customComment.value;
+            
+            // Log the submission (replace with your submission logic)
+            console.log('Submitted:', {
+                emoji: selectedEmoji,
+                comment: comment
+            });
+            
+            // Clear and close
+            customComment.value = '';
+            popup.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
 <br>
 23/02/25
 <br>
